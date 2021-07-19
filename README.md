@@ -16,3 +16,14 @@ luego se debe seleccionar el tipo de impuesto.
 Si son libros, alimentos o productos médicos se debe seleccionar el tipo ```Exentos```, si son libros, alimentos o productos médicos importados se debe seleccionar ```Importados Exentos```.
 
 En caso contrario se debe seleccionar ```Básico``` o ```Importados Básico```.
+
+
+## Test
+
+Lo que nos interesa es la función que calcula los impuestos y monta el ticket, dicha función podemos testearlo con unit testing, usando de entrada una entrada que sabemos el resultado, y esperando que se devuelva un resultado.
+Por ejemplo para el unit testing:
+De entrada podemos utilizar:
+```1 CD de música importado a 14,99 €```
+Sabemos que la salida debe de valer
+```14,99*0,1+14,99*0,05+14,99 = 17,24```
+Con unit testing podemos indicar que expectamos una respuesta de 17,24.
