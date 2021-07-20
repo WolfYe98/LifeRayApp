@@ -1,6 +1,39 @@
 import './App.css'
 import React,{useState,useEffect} from 'react'
 
+const ajustaDecimales = (numero)=>{
+  let inicioDecimal = numero.indexOf('.')
+  let parteEntera = numero.substring(0,inicioDecimal)
+  let decimales = numero.substring(inicioDecimal+1,numero.length-1)
+  let resultado = ''
+  if (decimales.length > 1 ){
+    let dec = '0'
+    for(let i = 1; i < decimales.length && dec === '0'; i++){
+      let num = parseInt(decimales.charAt(i))
+      if(num === 0){
+        continue
+      }
+      if (i == 1 && num >= 5){
+        dec = '9'
+      }
+      else if (num > 0 & num < 5){
+        dec = '5'
+      }
+      else if (i > 1){
+        dec = '5'
+      }
+    }
+    resultado = parteEntera+'.'+decimales.charAt(0)+dec
+    if (dec === '9'){
+      let masUno = parseInt(decimales.charAt(0))+1
+      resultado = parteEntera+'.'+masUno+'0'
+    }
+  }
+  else{
+    resultado = numero;
+  }
+  return resultado
+}
 
 const Elemento = (props)=>{
   const {texto,tipo} = props
@@ -28,43 +61,9 @@ function App() {
 
   const valorImpuestos = {1:0.1,2:0,3:0.05}
 
-
   useEffect(()=>{
     document.getElementById('area').value = ''
   },[ticket])
-  const ajustaDecimales = (numero)=>{
-    let inicioDecimal = numero.indexOf('.')
-    let parteEntera = numero.substring(0,inicioDecimal)
-    let decimales = numero.substring(inicioDecimal+1,numero.length-1)
-    let resultado = ''
-    if (decimales.length > 1 ){
-      let dec = '0'
-      for(let i = 1; i < decimales.length && dec === '0'; i++){
-        let num = parseInt(decimales.charAt(i))
-        if(num === 0){
-          continue
-        }
-        if (i == 1 && num >= 5){
-          dec = '9'
-        }
-        else if (num > 0 & num < 5){
-          dec = '5'
-        }
-        else if (i > 1){
-          dec = '5'
-        }
-      }
-      resultado = parteEntera+'.'+decimales.charAt(0)+dec
-      if (dec === '9'){
-        let masUno = parseInt(decimales.charAt(0))+1
-        resultado = parteEntera+'.'+masUno+'0'
-      }
-    }
-    else{
-      resultado = numero;
-    }
-    return resultado
-  }
 
   const calcularFactura = ()=>{
     let lineas = []
@@ -149,4 +148,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
