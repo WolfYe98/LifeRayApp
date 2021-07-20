@@ -3,7 +3,7 @@
 
 Esta aplicación está realizado con React.
 
-Para ejecutarlo primero hay que instalar ```npm``` más tarde hay que ir al directorio ```liferay-app```, ejecutar
+Para ejecutarlo primero hay que instalar ```npm```, más tarde hay que ir al directorio ```liferay-app```, ejecutar
 ```npm install``` para instalar las dependencias y finalmente ejecutar ```npm start``` para ejecutar la aplicación.
 
 
