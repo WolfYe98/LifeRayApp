@@ -1,48 +1,60 @@
 import './App.css'
 import React,{useState,useEffect} from 'react'
 
-const ajustaDecimales = (numero)=>{
+const ajustaDecimales = (numero,ajustaCentena=true,ajustaCentenaImpuestos=false)=>{
   let inicioDecimal = numero.indexOf('.')
   let parteEntera = numero.substring(0,inicioDecimal)
-  let decimales = numero.substring(inicioDecimal+1,numero.length)
+  let decimales = ''
   let resultado = ''
+  if(inicioDecimal !== -1){
+    decimales = numero.substring(inicioDecimal+1,numero.length)
+  }
   if (decimales.length > 1 ){
-    let dec = '0'
-    let i 
-    for(i = 1; i < decimales.length && dec === '0'; i++){
-      let num = parseInt(decimales.charAt(i))
-      if(num === 0){
-        continue
+    let centena = parseInt(decimales.charAt(1))
+    let decena = parseInt(decimales.charAt(0))
+    resultado = parteEntera+'.'+decimales.charAt(0)+decimales.charAt(1);
+    let suma = 0
+    let ajustarACinco = false
+    for(let indice = decimales.length-1;indice > 1; indice--){
+      let cifra = parseInt(decimales.charAt(indice))
+      cifra+=suma
+      suma = 0
+      if(cifra >= 5){
+        suma = 1
       }
-      if (num >= 5){
-        if (i === 1){
-          continue
-        }
-        else{
-          dec = 'SUM'
-        }
+      if(indice > 1 && cifra > 0){
+        ajustarACinco = true
       }
-      else{
-        if (i === 1){
-          dec = '5'
-        }
-        else{
-          continue
+    }
+    if (suma === 1){
+      centena += suma
+      if (centena === 10){
+        centena = 0
+        decena += 1
+        if (decena === 10){
+          parteEntera = parseInt(parteEntera)+1
+          decena = 0
         }
       }
     }
-    // FALLA CON 19,70002
-    resultado = parteEntera+'.'+decimales.substring(0,2)
-    if (dec === 'SUM'){
-      resultado = parseFloat(resultado)
-      if(i-2 === 1){
-        resultado += 0.01
+    else{
+      if (ajustaCentena && centena > 0 && centena < 5){
+        centena = 5
       }
-      resultado = resultado.toString()
+      else if(ajustaCentena && centena === 0 && ajustarACinco){
+        centena = 5
+      }
+      if(ajustaCentenaImpuestos && centena > 5){
+        centena = 0
+        decena+=1
+        if(decena === 10){
+          parteEntera = parseInt(parteEntera)+1
+          decena = 0
+        }
+      }
     }
-    else if(dec === '5'){
-      resultado = parteEntera+'.'+decimales.charAt(0)+dec
-    }
+    decimales = decena.toString()+centena.toString()
+    resultado = parteEntera+'.'+decimales
   }
   else{
     resultado = numero;
@@ -79,9 +91,10 @@ function App() {
 
   useEffect(()=>{
     document.getElementById('area').value = ''
+  },[elementos])
+  useEffect(()=>{
     document.getElementById('seleccion').value='1'
   },[ticket])
-
   const calcularFactura = ()=>{
     let lineas = []
     let totalImpuestos = 0.0
@@ -110,17 +123,18 @@ function App() {
         else if (tipoI === 4){
           importeImpuesto = precio*0.05
         }
-        
+        importeImpuesto = parseFloat(ajustaDecimales(importeImpuesto.toString()))
         precio += importeImpuesto
-        precio = parseFloat(ajustaDecimales(precio.toString()))
-        totalImpuestos += parseFloat(ajustaDecimales(importeImpuesto.toString()))
+        precio = parseFloat(ajustaDecimales(precio.toString())) * parseFloat(numeroProducto)
+        totalImpuestos += importeImpuesto
         total += precio
-       
         let nuevoTexto = itemText.substring(0,itemText.lastIndexOf('a')-1)+': '+precio+' €';
         lineas.push(<Elemento key={item.key} texto={nuevoTexto} />)
       }
     })
     if (lineas !== []){
+      totalImpuestos = parseFloat(ajustaDecimales(totalImpuestos.toString(),true,true))
+      total = parseFloat(ajustaDecimales(total.toString(),false))
       let textoImpuestos = 'Impuestos sobre las ventas: '+totalImpuestos+' €'
       let textoTotal = 'Total: '+total+' €'
       lineas.push(<Elemento key={lineas.length} texto={textoImpuestos} />)
@@ -132,6 +146,7 @@ function App() {
     setElementos([])
     setTicket(null)
     setText(null)
+    setTipo(1)
   }
   return (
     <div className="App">
