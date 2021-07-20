@@ -20,10 +20,10 @@ En caso contrario se debe seleccionar ```Básico``` o ```Importados Básico```.
 
 ## Test
 
-Lo que nos interesa es la función que calcula los impuestos y monta el ticket, dicha función podemos testearlo con unit testing, usando de entrada una entrada que sabemos el resultado, y esperando que se devuelva un resultado.
+Lo que nos interesa es la función que calcula los impuestos y el precio final de un producto, dicha función podemos testearlo con unit testing, usando de entrada una entrada que sabemos el resultado, y esperando que se devuelva un resultado.
 Por ejemplo para el unit testing:
 De entrada podemos utilizar:
 ```1 CD de música importado a 14,99 €```
 Sabemos que la salida debe de valer
 ```14,99*0,1+14,99*0,05+14,99 = 17,24```
-Con unit testing podemos indicar que expectamos una respuesta de 17,24.
+Con unit testing podemos indicar que expectamos una respuesta de 17,24, entonces en caso de que el resultado devuelto por la función sea diferente que el resultado, no pasaría el test y en caso contrario si pasaría el test.
