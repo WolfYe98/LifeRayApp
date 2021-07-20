@@ -17,7 +17,8 @@ Si son libros, alimentos o productos médicos se debe seleccionar el tipo ```Exe
 
 En caso contrario se debe seleccionar ```Básico``` o ```Importados Básico```.
 
-
+### Fichero App.js
+En el fichero ```App.js``` se encuentra todo el código que he realizado para esta prueba, en ```App.css``` se encuentra los estilos.
 ## Test
 
 Lo que nos interesa es la función que calcula los impuestos y el precio final de un producto, dicha función podemos testearlo con unit testing, usando de entrada una entrada que sabemos el resultado, y esperando que se devuelva un resultado.
