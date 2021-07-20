@@ -7,7 +7,7 @@ Para ejecutarlo primero hay que instalar ```npm```, más tarde hay que ir al dir
 ```npm install``` para instalar las dependencias y finalmente ejecutar ```npm start``` para ejecutar la aplicación.
 
 
-## IMPORTANTE
+## IMPORTANTE!
 Al introducir un producto, se debe introducir el texto entero, por ejemplo:
 
 ```1 libro a 19,75 €```
