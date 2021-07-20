@@ -1,5 +1,5 @@
 import './App.css'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 
 
 const Elemento = (props)=>{
@@ -28,6 +28,44 @@ function App() {
 
   const valorImpuestos = {1:0.1,2:0,3:0.05}
 
+
+  useEffect(()=>{
+    document.getElementById('area').value = ''
+  },[ticket])
+  const ajustaDecimales = (numero)=>{
+    let inicioDecimal = numero.indexOf('.')
+    let parteEntera = numero.substring(0,inicioDecimal)
+    let decimales = numero.substring(inicioDecimal+1,numero.length-1)
+    let resultado = ''
+    if (decimales.length > 1 ){
+      let dec = '0'
+      for(let i = 1; i < decimales.length && dec === '0'; i++){
+        let num = parseInt(decimales.charAt(i))
+        if(num === 0){
+          continue
+        }
+        if (i == 1 && num >= 5){
+          dec = '9'
+        }
+        else if (num > 0 & num < 5){
+          dec = '5'
+        }
+        else if (i > 1){
+          dec = '5'
+        }
+      }
+      resultado = parteEntera+'.'+decimales.charAt(0)+dec
+      if (dec === '9'){
+        let masUno = parseInt(decimales.charAt(0))+1
+        resultado = parteEntera+'.'+masUno+'0'
+      }
+    }
+    else{
+      resultado = numero;
+    }
+    return resultado
+  }
+
   const calcularFactura = ()=>{
     let lineas = []
     let totalImpuestos = 0.0
@@ -44,24 +82,24 @@ function App() {
         if (finPrecio === -1){
           finPrecio = itemText.length;
         }
-        let precio = itemText.substring(inicioPrecio, finPrecio)
+        let precio = itemText.substring(inicioPrecio,finPrecio)
         precio = precio.replace(',','.')
         precio = parseFloat(precio)
 
         importeImpuesto = precio*valorImpuestos[tipoI]
-        if(tipoI == 3){
+
+        if(tipoI === 3){
           importeImpuesto = precio*0.05 + precio*0.1
         }
-        else if (tipoI == 4){
+        else if (tipoI === 4){
           importeImpuesto = precio*0.05
         }
-
-        importeImpuesto = Math.round((importeImpuesto+Number.EPSILON)*100)/100
-
+        
         precio += importeImpuesto
-        precio = Math.round((precio+Number.EPSILON)*100)/100
-        totalImpuestos += importeImpuesto
+        precio = parseFloat(ajustaDecimales(precio.toString()))
+        totalImpuestos += parseFloat(ajustaDecimales(importeImpuesto.toString()))
         total += precio
+       
         let nuevoTexto = itemText.substring(0,itemText.lastIndexOf('a')-1)+': '+precio+' €';
         lineas.push(<Elemento key={item.key} texto={nuevoTexto} />)
       }
@@ -82,7 +120,7 @@ function App() {
   return (
     <div className="App">
       <section className='intro'>
-        <textarea placeholder="Introduce el texto" onKeyUp={event => setText(event.target.value)}></textarea>
+        <textarea id='area' placeholder="Introduce el texto" onKeyUp={event => setText(event.target.value)}></textarea>
         <div>
           <label>Tipo Producto: </label>
           <select onChange={(e)=>setTipo(parseInt(e.target.value))}>
