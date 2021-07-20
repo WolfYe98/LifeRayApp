@@ -4,29 +4,44 @@ import React,{useState,useEffect} from 'react'
 const ajustaDecimales = (numero)=>{
   let inicioDecimal = numero.indexOf('.')
   let parteEntera = numero.substring(0,inicioDecimal)
-  let decimales = numero.substring(inicioDecimal+1,numero.length-1)
+  let decimales = numero.substring(inicioDecimal+1,numero.length)
   let resultado = ''
   if (decimales.length > 1 ){
     let dec = '0'
-    for(let i = 1; i < decimales.length && dec === '0'; i++){
+    let i 
+    for(i = 1; i < decimales.length && dec === '0'; i++){
       let num = parseInt(decimales.charAt(i))
       if(num === 0){
         continue
       }
-      if (i == 1 && num >= 5){
-        dec = '9'
+      if (num >= 5){
+        if (i === 1){
+          continue
+        }
+        else{
+          dec = 'SUM'
+        }
       }
-      else if (num > 0 & num < 5){
-        dec = '5'
-      }
-      else if (i > 1){
-        dec = '5'
+      else{
+        if (i === 1){
+          dec = '5'
+        }
+        else{
+          continue
+        }
       }
     }
-    resultado = parteEntera+'.'+decimales.charAt(0)+dec
-    if (dec === '9'){
-      let masUno = parseInt(decimales.charAt(0))+1
-      resultado = parteEntera+'.'+masUno+'0'
+    // FALLA CON 19,70002
+    resultado = parteEntera+'.'+decimales.substring(0,2)
+    if (dec === 'SUM'){
+      resultado = parseFloat(resultado)
+      if(i-2 === 1){
+        resultado += 0.01
+      }
+      resultado = resultado.toString()
+    }
+    else if(dec === '5'){
+      resultado = parteEntera+'.'+decimales.charAt(0)+dec
     }
   }
   else{
@@ -35,6 +50,7 @@ const ajustaDecimales = (numero)=>{
   return resultado
 }
 
+// Components
 const Elemento = (props)=>{
   const {texto,tipo} = props
   return(
@@ -63,6 +79,7 @@ function App() {
 
   useEffect(()=>{
     document.getElementById('area').value = ''
+    document.getElementById('seleccion').value='1'
   },[ticket])
 
   const calcularFactura = ()=>{
@@ -122,7 +139,7 @@ function App() {
         <textarea id='area' placeholder="Introduce el texto" onKeyUp={event => setText(event.target.value)}></textarea>
         <div>
           <label>Tipo Producto: </label>
-          <select onChange={(e)=>setTipo(parseInt(e.target.value))}>
+          <select onChange={(e)=>setTipo(parseInt(e.target.value))} id='seleccion'>
             <option value={1}>Básico</option>
             <option value={2}>Exentos</option>
             <option value={3}>Importados Básicos</option>
